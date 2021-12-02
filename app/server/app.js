@@ -1,5 +1,7 @@
 const { kMaxLength } = require("buffer");
-const app = require("express");
+const express = require("express");
+const app = express();
+
 const http = require("http").createServer(app);
 var io = require("socket.io")(http, {
   cors: {
@@ -8,12 +10,12 @@ var io = require("socket.io")(http, {
   },
 });
 
-const chat = io.of("/:chatName");
+const chat = io.of("/ChatRooms/");
 
 chat.on("connection", (socket) => {
   /* socket object may be used to send specific messages to the new connected client */
   console.log("new client connected");
-
+  chat.to(`${socket.chatName}`);
   socket.emit("connection", null);
   socket.on("join-room", async (data, callback) => {
     try {
