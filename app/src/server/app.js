@@ -1,3 +1,4 @@
+const { kMaxLength } = require("buffer");
 const app = require("express");
 const http = require("http").createServer(app);
 var io = require("socket.io")(http, {
@@ -7,18 +8,25 @@ var io = require("socket.io")(http, {
   },
 });
 
-app.get("/", (req, res) => {
-  res.send();
-});
-
 io.on("connection", (socket) => {
   /* socket object may be used to send specific messages to the new connected client */
   console.log("new client connected");
-  socket.on("join-room", (data) => {
-    socket.leave(data.previosRoom);
-    socket.join(data.newRoom);
 
-    socket.emit("joined room", data.newRoom);
+  socket.emit("connection", null);
+  socket.on("join-room", async (data, callback) => {
+    try {
+      socket.leave(data.previousRoom);
+      socket.join(data.newRoom);
+      socket.emit("joined room", data.newRoom);
+
+      callback({
+        status: "OK",
+      });
+    } catch (e) {
+      callback({
+        status: "error",
+      });
+    }
   });
 
   socket.on("message", ({ name, message }) => {
@@ -28,7 +36,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Disconnect Fired");
-    //socket.broadcast.emit('user_leave', `${this.username} has left`);
+    socket.broadcast.emit("user_leave", `${this.username} has left`);
   });
 });
 
