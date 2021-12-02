@@ -59,13 +59,17 @@ function App() {
 
   return (
     <div>
-      {rooms.length === 0 && (
+      {rooms.length === 0 ? (
         <div>
           <h1>Make a room</h1>
           <form
             className="form"
             onSubmit={(e) => {
-              // userName.value = '';
+              e.preventDefault();
+              setRooms(
+                rooms.concat([document.getElementById("room_input").value])
+              );
+              alert(rooms);
             }}
           >
             <div className="form-group">
@@ -75,9 +79,43 @@ function App() {
                 <input id="room_input" />
               </label>
             </div>
+            <button type="submit"> Click to make room</button>
           </form>
         </div>
+      ) : (
+        <div>
+          <h1>Make a room</h1>
+          <form
+            className="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setRooms(
+                rooms.concat([document.getElementById("room_input").value])
+              );
+              alert(rooms);
+            }}
+          >
+            <div className="form-group">
+              <label>
+                Room Name:
+                <br />
+                <input id="room_input" />
+              </label>
+            </div>
+            <button type="submit"> Click to make room</button>
+          </form>
+          {rooms.map((room) => {
+            return (
+              <div>
+                <a href={`/${room}`}>
+                  <h1>{room}</h1>
+                </a>
+              </div>
+            );
+          })}
+        </div>
       )}
+
       {state.name && (
         <div className="card">
           <div className="render-chat">
@@ -98,7 +136,6 @@ function App() {
           </form>
         </div>
       )}
-
       {!state.name && (
         <form
           className="form"
