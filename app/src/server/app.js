@@ -7,18 +7,18 @@ var io = require("socket.io")(http, {
   },
 });
 
-app.length("/", (req, res) => {
+app.get("/", (req, res) => {
   res.send();
 });
 
 io.on("connection", (socket) => {
   /* socket object may be used to send specific messages to the new connected client */
   console.log("new client connected");
-  socket.emit("connection", null);
-  socket.on("user_join", (name) => {
-    this.username = name;
-    console.log(name);
-    socket.broadcast.emit("user_join", name);
+  socket.on("join-room", (data) => {
+    socket.leave(data.previosRoom);
+    socket.join(data.newRoom);
+
+    socket.emit("joined room", data.newRoom);
   });
 
   socket.on("message", ({ name, message }) => {
