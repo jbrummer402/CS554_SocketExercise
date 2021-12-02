@@ -6,6 +6,8 @@ function App() {
   const [state, setState] = useState({ message: "", name: "" });
   const [chat, setChat] = useState([]);
 
+  const [rooms, setRooms] = useState([]);
+
   const socketRef = useRef();
 
   useEffect(() => {
@@ -57,6 +59,25 @@ function App() {
 
   return (
     <div>
+      {rooms.length === 0 && (
+        <div>
+          <h1>Make a room</h1>
+          <form
+            className="form"
+            onSubmit={(e) => {
+              // userName.value = '';
+            }}
+          >
+            <div className="form-group">
+              <label>
+                Room Name:
+                <br />
+                <input id="room_input" />
+              </label>
+            </div>
+          </form>
+        </div>
+      )}
       {state.name && (
         <div className="card">
           <div className="render-chat">
